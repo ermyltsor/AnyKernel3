@@ -458,6 +458,21 @@ flash_boot() {
   fi;
 }
 
+vbmeta_disable_verification() {
+  local path file imgblock;
+
+  path=/dev/block/bootdevice/by-name;
+  for file in vbmeta vbmeta$SLOT; do
+    if [ -e $path/$file ]; then
+      imgblock=$path/$file;
+      break;
+    fi;
+  done;
+  $BIN/vbmeta-disable-verification $imgblock;
+  [ $? == 0 ] || abort "Failed to disable verification on vbmeta. Aborting...";
+  ui_print " " "Successfully disabled verification on vbmeta!";
+}
+
 # flash_generic <name>
 flash_generic() {
   local avb avbblock avbpath file flags img imgblock imgsz isro isunmounted path;
