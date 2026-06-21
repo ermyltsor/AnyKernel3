@@ -471,7 +471,7 @@ flash_generic() {
   done;
 
   if [ "$img" -a ! -f ${1}_flashed ]; then
-    for path in /dev/block/mapper /dev/block/by-name /dev/block/bootdevice/by-name; do
+    for path in /dev/block/mapper /dev/block/bootdevice/by-name /dev/block/by-name; do
       for file in $1 $1$SLOT; do
         if [ -e $path/$file ]; then
           imgblock=$path/$file;
@@ -493,7 +493,7 @@ flash_generic() {
         [ $? == 0 ] || abort "Failed to parse top-level vbmeta. Aborting...";
         if [ "$flags" == "enabled" ]; then
           ui_print " " "dm-verity detected! Patching $avb...";
-          for avbpath in /dev/block/mapper /dev/block/by-name /dev/block/bootdevice/by-name; do
+          for avbpath in /dev/block/mapper /dev/block/bootdevice/by-name /dev/block/by-name; do
             for file in $avb $avb$SLOT; do
               if [ -e $avbpath/$file ]; then
                 avbblock=$avbpath/$file;
@@ -918,10 +918,10 @@ setup_ak() {
               abort "Unable to determine mtd $BLOCK partition. Aborting...";
             fi;
             [ -e /dev/mtd/$mtdname ] && target=/dev/mtd/$mtdname;
-          elif [ -e /dev/block/by-name/$part ]; then
-            target=/dev/block/by-name/$part;
           elif [ -e /dev/block/bootdevice/by-name/$part ]; then
             target=/dev/block/bootdevice/by-name/$part;
+          elif [ -e /dev/block/by-name/$part ]; then
+            target=/dev/block/by-name/$part;
           elif [ -e /dev/block/platform/*/by-name/$part ]; then
             target=/dev/block/platform/*/by-name/$part;
           elif [ -e /dev/block/platform/*/*/by-name/$part ]; then
